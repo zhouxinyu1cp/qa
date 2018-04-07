@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<title>Title</title>-->
+</head>
+<body>
+
+## 注释 ##
+
+#*
+    多行注释
+    看不见看不见
+*#
+
+$value1
+<br><br>
+
+$arr
+<br><br>
+
+$map
+<br><br>
+
+#foreach($k in $map.keySet())
+    key:$k,  value:$map.get($k)
+#end
+<br><br>
+
+#foreach($kv in $map.entrySet())
+    key:$kv.key,  value:$kv.value
+#end
+<br><br>
+
+$user.name
+<br>
+$user.getName()
+<br>
+$user.description
+<br><br>
+
+#set($var = "wozhegequ")
+$var
+<br><br>
+
+#macro(print, $elem, $idx)
+    $idx:$elem
+#end
+
+#foreach($elem in $arr)
+    #print($elem, $foreach.index)
+#end
+<br><br>
+
+#set($title = "Title")
+include: #include("header.html")
+<br>
+parse: #parse("header.html")
+<br><br>
+
+#set($h = "hello")
+#set($hw = "$h world")
+$hw
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
