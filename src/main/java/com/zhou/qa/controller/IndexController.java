@@ -1,9 +1,13 @@
 package com.zhou.qa.controller;
 
 import com.zhou.qa.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -19,15 +23,20 @@ import java.util.*;
 @Controller
 public class IndexController
 {
+    public static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+
     public IndexController() {}
 
+    // 主页请求
     @RequestMapping(path={"/", "/index"}, method = {RequestMethod.GET})
     @ResponseBody
     public String index()
     {
+        logger.info("VISIT INDEX");
         return "Hi, My first SpringBoot index";
     }
 
+    // 获取路径参数、Http请求参数
     @RequestMapping(path={"/param/{gid}/{uid}"})
     @ResponseBody
     public String param(@PathVariable("gid") String gid,
@@ -38,8 +47,9 @@ public class IndexController
         return String.format("%s: %d, type:%d, key:%s", gid, uid, type, key);
     }
 
+    // 网页模板测试
     @RequestMapping(path = {"/template"}, method = {RequestMethod.GET})
-    public String template(Model model)
+    public String template(Model model)  // 通过 Model 把数据传递到网页上
     {
         model.addAttribute("value1", "zhouxinyu");
 
@@ -55,9 +65,10 @@ public class IndexController
 
         model.addAttribute("user", new User("zhou"));
 
-        return "index";
+        return "index";  // 返回 resources/templates 下的网页模板
     }
 
+    // 测试 HttpServletRequest  HttpServletResponse
     @RequestMapping(path = {"/request"}, method = {RequestMethod.GET})
     @ResponseBody
     public String request(HttpServletRequest request,
@@ -94,6 +105,44 @@ public class IndexController
         response.addCookie(new Cookie("username", "daodaodao"));
 
         return sb.toString();
+    }
+
+    // 重定向测试
+    @RequestMapping(path = {"/redirect/{code}"}, method = {RequestMethod.GET})
+    public RedirectView redirect(@PathVariable("code") int code,
+                                 HttpSession session)
+    {
+        session.setAttribute("msg", "this is a redirect action");
+
+        RedirectView rv = new RedirectView("/", true);  // 创建重定向跳转页面
+
+        if(code == 301)
+        {
+            rv.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+        }
+
+        return rv;
+    }
+
+    // 异常测试
+    @RequestMapping(path = {"/exception"}, method = {RequestMethod.GET})
+    @ResponseBody
+    public String exception(@RequestParam(value = "key", required = false) String key)
+    {
+        if(key.equals("123"))
+        {
+            return "Hi, Exception";
+        }
+
+        throw new IllegalArgumentException("请求参数错误");
+    }
+
+    // 处理异常
+    @ExceptionHandler()
+    @ResponseBody
+    public String processException(Exception e)
+    {
+        return "Exception: " + e.getMessage();
     }
 }
 
