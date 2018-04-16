@@ -1,7 +1,9 @@
 package com.zhou.qa;
 
-import com.zhou.qa.dao.UserDao;
-import com.zhou.qa.model.User;
+import com.zhou.qa.dao.QuestionDao;
+
+import com.zhou.qa.model.Question;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.test.annotation.SystemProfileValueSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Date;
 import java.util.Random;
 
 //import org.springframework.boot.test.context.SpringBootTest;
@@ -20,32 +23,31 @@ import java.util.Random;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = QaApplication.class)
 @WebAppConfiguration
-public class UserDaoTests
+public class QuestionDaoTests
 {
 	@Autowired
-	UserDao userDao;
+	QuestionDao questionDao;
 
 	@Test
-	public void initUserDatabase()
+	public void initQuestionDatabase()
 	{
 		Random rand = new Random();
 
 		for(int i = 0; i < 11; i++)
 		{
-			User u = new User();
-			u.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png", rand.nextInt(1000)));
-			u.setName(String.format("User%d", i));
-			u.setPassword("");
-			u.setSalt("");
+			Question q = new Question();
+			q.setCommentCount(1);
+			Date d = new Date();
+			d.setTime(d.getTime() + 3600 * 1000 * i);
+			q.setCreatedDate(d);
+			q.setUserId(i + 1);
+			q.setTitle(String.format("Title%d", i));
+			q.setContent(String.format("afafafafafaf content %d", i));
 
-			userDao.addUser(u);
-
-			u.setPassword("zhou");
-			userDao.updatePasswd(u);
+			questionDao.addQuestion(q);
 		}
 
-		System.out.println(userDao.selectById(10).getPassword());
-		userDao.deleteById(2);
+		System.out.println(questionDao.selectLatestQuestions(0, 0, 10));
 	}
 
 }

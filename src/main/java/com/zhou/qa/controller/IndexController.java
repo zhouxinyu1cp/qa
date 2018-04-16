@@ -20,7 +20,8 @@ import java.util.*;
  * Created by zhouxinyu1cp on 2018/4/4.
  */
 
-@Controller
+// 练习用
+//@Controller
 public class IndexController
 {
     public static final Logger logger = LoggerFactory.getLogger(IndexController.class);
