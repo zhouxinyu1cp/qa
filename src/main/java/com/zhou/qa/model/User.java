@@ -3,6 +3,8 @@ package com.zhou.qa.model;
 /**
  * Created by zhouxinyu1cp on 2018/4/7.
  */
+
+// User对象，对应数据库表 user 中的每条记录
 public class User
 {
     private int id;

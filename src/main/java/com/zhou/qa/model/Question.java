@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by zhouxinyu1cp on 2018/4/16.
  */
 
+// Question，对应数据库表 question 中的每条数据
 public class Question
 {
     private int id;

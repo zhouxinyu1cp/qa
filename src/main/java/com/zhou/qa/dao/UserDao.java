@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.*;
  * Created by zhouxinyu1cp on 2018/4/14.
  */
 
+// MyBatis 插入数据库，简单的SQL语句直接用注解即可
 @Mapper
 public interface UserDao
 {
@@ -20,6 +21,9 @@ public interface UserDao
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id=#{id}"})
     User selectById(int id);
+
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where name=#{username}"})
+    User selectByName(@Param("username") String username);
 
     @Update({"update ", TABLE_NAME, " set password=#{password} where id=#{id}"})
     void updatePasswd(User user);
