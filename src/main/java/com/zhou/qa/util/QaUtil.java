@@ -1,9 +1,11 @@
 package com.zhou.qa.util;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.MessageDigest;
+import java.util.Map;
 
 /**
  * Created by zhouxinyu1cp on 2018/4/22.
@@ -39,4 +41,42 @@ public class QaUtil
             return null;
         }
     }
+
+    // 获取应答返回的Json字符串
+    public static String getResponseJsonString(int retCode)
+    {
+        JSONObject json = new JSONObject();
+        json.put("code", retCode);
+        return json.toJSONString();
+    }
+
+    public static String getResponseJsonString(int retCode, String msg)
+    {
+        JSONObject json = new JSONObject();
+        json.put("code", retCode);
+        json.put("msg", msg);
+        return json.toJSONString();
+    }
+
+    public static String getResponseJsonString(int retCode, Map<String, Object> map)
+    {
+        JSONObject json = new JSONObject();
+        json.put("code", retCode);
+        for(Map.Entry<String, Object> entry : map.entrySet())
+        {
+            json.put(entry.getKey(), entry.getValue());
+        }
+
+        return json.toJSONString();
+    }
 }
+
+
+
+
+
+
+
+
+
+

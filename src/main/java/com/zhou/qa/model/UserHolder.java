@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
  * Created by zhouxinyu1cp on 2018/4/22.
  */
 
+// 通过拦截器 PassportInterceptor 获取的用户信息放入该容器中，
+// 若用户已登录，后台有其登录的 token，拦截器能根据 token 获取到用户信息
+// 若用户没登录，没有有效 token，拦截器获取不了用户信息
 @Component
 public class UserHolder
 {
