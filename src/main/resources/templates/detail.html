@@ -1,4 +1,5 @@
 #parse("header.html")
+
 <link rel="stylesheet" href="../styles/detail.css">
 <div class="zg-wrap zu-main clearfix with-indention-votebar" itemscope="" itemtype="http://schema.org/Question"
      id="zh-single-question-page" data-urltoken="36301524" role="main">
@@ -78,6 +79,7 @@
                  data-init="{&quot;params&quot;: {&quot;url_token&quot;: 36301524, &quot;pagesize&quot;: 10, &quot;offset&quot;: 0}, &quot;nodename&quot;: &quot;QuestionAnswerListV2&quot;}">
 
                 #foreach($comment in $comments)
+
                 <div tabindex="-1" class="zm-item-answer  zm-item-expanded" itemprop="topAnswer" itemscope=""
                      itemtype="http://schema.org/Answer" data-aid="22162611" data-atoken="66862039" data-collapsed="0"
                      data-created="1444310527" data-deleted="0" data-helpful="1" data-isowner="0" data-copyable="1"
@@ -135,7 +137,9 @@
                         </div>
                     </div>
                 </div>
+
                 #end
+
             </div>
             <a name="draft"></a>
             <form action="/addComment" method="post" id="commentform">
@@ -159,4 +163,5 @@
         </div>
     </div>
 </div>
+
 #parse("footer.html")

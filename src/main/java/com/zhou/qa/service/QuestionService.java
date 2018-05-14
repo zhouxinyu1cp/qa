@@ -45,6 +45,12 @@ public class QuestionService
     {
         return questionDao.selectById(questionId);
     }
+
+    // 更新对应 id 记录中的 comment_count 字段
+    public void updateCommentCountById(int questionId, int count)
+    {
+        questionDao.updateCommentCountById(questionId, count);
+    }
 }
 
 
