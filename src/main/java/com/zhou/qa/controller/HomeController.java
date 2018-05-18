@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 public class HomeController
 {
-    public static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+    public static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
     private UserService userService;

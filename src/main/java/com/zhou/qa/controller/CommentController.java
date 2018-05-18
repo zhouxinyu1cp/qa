@@ -24,7 +24,7 @@ import java.util.Date;
 @Controller
 public class CommentController
 {
-    public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    public static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     @Autowired
     CommentService commentService;

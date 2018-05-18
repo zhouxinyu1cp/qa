@@ -24,7 +24,7 @@ import java.util.List;
 @Controller
 public class QuestionController
 {
-    public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    public static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
     UserHolder userHolder;

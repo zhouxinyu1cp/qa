@@ -120,6 +120,7 @@ public class UserService
         return map;
     }
 
+    // 处理用户注销
     public void logout(String ticket)
     {
         // 登出时，把数据库中该 token 对应的记录删除即可
@@ -128,6 +129,11 @@ public class UserService
         // 登出时，把数据库中该 token 对应的记录状态置为无效，
         // 一般不删除，历史 token 对应的都是用户的登录记录
         loginTicketDao.updateByTicket(ticket, 1);
+    }
+
+    public User getUserByName(String name)
+    {
+        return userDao.selectByName(name);
     }
 }
 
