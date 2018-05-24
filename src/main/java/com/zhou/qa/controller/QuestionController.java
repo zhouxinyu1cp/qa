@@ -2,6 +2,7 @@ package com.zhou.qa.controller;
 
 import com.zhou.qa.model.*;
 import com.zhou.qa.service.CommentService;
+import com.zhou.qa.service.LikeService;
 import com.zhou.qa.service.QuestionService;
 import com.zhou.qa.service.UserService;
 import com.zhou.qa.util.QaUtil;
@@ -37,6 +38,9 @@ public class QuestionController
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LikeService likeService;
 
     // 发布问题请求
     // 通过调用js函数来提交发布问题请求，是一个POST请求，返回一个json字符串给前端更新页面
@@ -94,6 +98,18 @@ public class QuestionController
             for(Comment comment : cmt_list)
             {
                 ViewObject vo = new ViewObject();
+
+                // 获取当前用户对该条评论点赞的赞、踩状态
+                int likeStatus = 0;
+                if(userHolder.getUser() != null)
+                {
+                    likeStatus = likeService.getLikeStatus(userHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId());
+                }
+
+                vo.set("liked", likeStatus);
+
+                // 获取当前评论的点赞数
+                vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
 
                 User user = userService.getUserById(comment.getUserId());
                 vo.set("user", user);
