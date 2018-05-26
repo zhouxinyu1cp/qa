@@ -1,5 +1,8 @@
 package com.zhou.qa.controller;
 
+import com.zhou.qa.async.Event;
+import com.zhou.qa.async.EventSender;
+import com.zhou.qa.async.EventType;
 import com.zhou.qa.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +31,9 @@ public class LoginController
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventSender eventSender;
 
     // 注册登录页面
     @RequestMapping(value = {"/reglogin"}, method = {RequestMethod.GET})
@@ -105,6 +111,11 @@ public class LoginController
                 cookie.setMaxAge(3600 * 24 * 30);
             }
             response.addCookie(cookie);
+
+            // 登陆的时候触发登陆事件
+            Event event = new Event(EventType.LOGIN_EVENT);
+            event.setExt("username", username).setExt("toEmail", "zhouxinyu1cp@163.com");
+            eventSender.sendEvent(event);
 
             // 有跳转请求，登录完成后跳转到指定url
             if(StringUtils.isNotBlank(nextUrl))
