@@ -10,6 +10,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Tuple;
 
+import java.util.List;
+
 /**
  * Created by zhouxinyu1cp on 2018/5/22.
  */
@@ -272,6 +274,58 @@ public class JedisAdapter implements InitializingBean
         }
 
         return 0;
+    }
+
+    //-------- 对 Redis list 做封装 --------//
+
+    // 从list左边添加元素
+    public long lpush(String key, String val)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.lpush(key, val);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis添加数据出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return -1;
+    }
+
+    // 从list右边弹出元素，
+    // 若list为空，则阻塞直到list有元素为止
+    // 返回一个双元素的List，第1个是key，第2个是value，取value即可
+    public List<String> brpop(int timeout, String key)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.brpop(timeout, key); // timeout=0，无限阻塞
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis添加数据出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
     }
 }
 

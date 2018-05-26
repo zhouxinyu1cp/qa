@@ -1,7 +1,12 @@
 package com.zhou.qa.controller;
 
+import com.zhou.qa.async.Event;
+import com.zhou.qa.async.EventSender;
+import com.zhou.qa.async.EventType;
+import com.zhou.qa.model.Comment;
 import com.zhou.qa.model.EntityType;
 import com.zhou.qa.model.UserHolder;
+import com.zhou.qa.service.CommentService;
 import com.zhou.qa.service.LikeService;
 import com.zhou.qa.util.QaUtil;
 import org.slf4j.Logger;
@@ -29,6 +34,12 @@ public class LikeController
     @Autowired
     LikeService likeService;
 
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    EventSender eventSender;
+
     // 点赞
     // 通过js提交请求，POST请求，返回一个json字符串给前端
     // 具体请求信息见 resources/static/scripts/main/util/action.js 和 main/site/detail.js
@@ -43,6 +54,17 @@ public class LikeController
             {
                 return QaUtil.getResponseJsonString(999); // 跳转到登录页面
             }
+
+            // 产生一个点赞事件，发给异步通知系统处理
+            Comment comment = commentService.getCommentById(commentId);
+            Event event = new Event(EventType.LIKE_EVENT);
+            event.setFromUserId(userHolder.getUser().getId())
+                    .setToUserId(comment.getUserId())
+                    .setEntityType(EntityType.ENTITY_COMMENT)
+                    .setEntityId(commentId)
+                    .setExt("questionId", String.valueOf(comment.getEntityId()));
+            // 发送事件
+            eventSender.sendEvent(event);
 
             long likeCount = likeService.like(userHolder.getUser().getId(), EntityType.ENTITY_COMMENT, commentId); // 点赞
             return QaUtil.getResponseJsonString(0, String.valueOf(likeCount)); // 返回当前的点赞数

@@ -14,6 +14,8 @@ public class QaUtil
 {
     private static final Logger logger = LoggerFactory.getLogger(QaUtil.class);
 
+    public static int SYSTEM_USER_ID = 1; // 系统管理员id
+
     public static String MD5(String key) {
         char hexDigits[] = {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'

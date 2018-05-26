@@ -43,6 +43,12 @@ public class CommentService
     {
         return commentDao.getCommentsCountByEntityId(entityId, entityType);
     }
+
+    // 根据指定id获取对应的评论
+    public Comment getCommentById(int commentId)
+    {
+        return commentDao.selectByCommentId(commentId);
+    }
 }
 
 
