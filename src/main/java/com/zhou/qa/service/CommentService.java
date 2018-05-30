@@ -49,6 +49,12 @@ public class CommentService
     {
         return commentDao.selectByCommentId(commentId);
     }
+
+    // 获取某用户发表了多少评论数
+    public int getCommentCountByUserId(int userId)
+    {
+        return commentDao.getCommentCountByUserId(userId);
+    }
 }
 
 

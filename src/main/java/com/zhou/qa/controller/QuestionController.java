@@ -1,10 +1,7 @@
 package com.zhou.qa.controller;
 
 import com.zhou.qa.model.*;
-import com.zhou.qa.service.CommentService;
-import com.zhou.qa.service.LikeService;
-import com.zhou.qa.service.QuestionService;
-import com.zhou.qa.service.UserService;
+import com.zhou.qa.service.*;
 import com.zhou.qa.util.QaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +38,9 @@ public class QuestionController
 
     @Autowired
     LikeService likeService;
+
+    @Autowired
+    FollowService followService;
 
     // 发布问题请求
     // 通过调用js函数来提交发布问题请求，是一个POST请求，返回一个json字符串给前端更新页面
@@ -83,12 +83,40 @@ public class QuestionController
     // 返回该问题的详细页面
     @RequestMapping(value = {"/question/{questionId}"}, method = {RequestMethod.GET})
     public String questionDetail(@PathVariable("questionId") int questionId,
-                                 Model model)
+                                  Model model)
     {
         try
         {
             Question question = questionService.getQuestionById(questionId);
             model.addAttribute("question", question);
+
+            // 获取当前用户对该问题的关注状态
+            boolean followed = false;
+            if(userHolder.getUser() != null)
+            {
+                followed = followService.isFollower(userHolder.getUser().getId(),
+                                                        EntityType.ENTITY_QUESTION, questionId);
+
+            }
+            if(followed)
+            {
+                model.addAttribute("followed", 1);
+            }
+
+            // 获取该问题的粉丝列表，即该问题的关注者列表
+            List<Integer> followerIds = followService.getFollowers(EntityType.ENTITY_QUESTION,
+                                                                        questionId, 0, 10);
+            List<ViewObject> followUsers = new ArrayList<ViewObject>();
+            for(Integer id : followerIds)
+            {
+                ViewObject v = new ViewObject();
+                User u = userService.getUserById(id);
+                v.set("id", u.getId());
+                v.set("name", u.getName());
+                v.set("headUrl", u.getHeadUrl());
+                followUsers.add(v);
+            }
+            model.addAttribute("followUsers", followUsers);
 
             // 获取该问题对应的所有评论
             List<Comment> cmt_list = commentService.getCommentsByEntity(questionId, EntityType.ENTITY_QUESTION);

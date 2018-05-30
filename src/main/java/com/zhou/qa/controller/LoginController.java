@@ -115,7 +115,7 @@ public class LoginController
             // 登陆的时候触发登陆事件
             Event event = new Event(EventType.LOGIN_EVENT);
             event.setExt("username", username).setExt("toEmail", "zhouxinyu1cp@163.com");
-            eventSender.sendEvent(event);
+//            eventSender.sendEvent(event); // 不然老发邮件
 
             // 有跳转请求，登录完成后跳转到指定url
             if(StringUtils.isNotBlank(nextUrl))

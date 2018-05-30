@@ -10,7 +10,9 @@ public enum EventType
     LOGIN_EVENT(1),     // 登录事件
     LIKE_EVENT(2),      // 点赞事件
     MESSAGE_EVENT(3),   // 私信事件
-    MAIL_EVENT(4);      // 邮件事件
+    MAIL_EVENT(4),      // 邮件事件
+    FOLLOW_EVENT(5),    // 关注事件
+    UNFOLLOW_EVENT(6);  // 取关事件
 
     private int value;
 

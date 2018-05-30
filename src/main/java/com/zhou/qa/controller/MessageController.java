@@ -125,7 +125,7 @@ public class MessageController
             {
                 ViewObject vo = new ViewObject();
 
-                vo.set("conversation", msg);
+                vo.set("message", msg);
 
                 int otherUserId = (msg.getFromId() == curUserId ? msg.getToId() : msg.getFromId());
                 User otherUser = userService.getUserById(otherUserId);

@@ -1,7 +1,8 @@
 package com.zhou.qa.controller;
 
-import com.zhou.qa.model.Question;
-import com.zhou.qa.model.ViewObject;
+import com.zhou.qa.model.*;
+import com.zhou.qa.service.CommentService;
+import com.zhou.qa.service.FollowService;
 import com.zhou.qa.service.QuestionService;
 import com.zhou.qa.service.UserService;
 import org.slf4j.Logger;
@@ -33,6 +34,15 @@ public class HomeController
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private FollowService followService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UserHolder userHolder;
+
     private List<ViewObject> getQuestions(int userId, int offset, int limit)
     {
         List<Question> qs = questionService.getLatestQuestions(userId, offset, limit);
@@ -44,6 +54,8 @@ public class HomeController
             ViewObject vo = new ViewObject();
             vo.set("question", q);
             vo.set("user", userService.getUserById(q.getUserId()));
+            vo.set("followCount", followService.getFollowersCount(EntityType.ENTITY_QUESTION, q.getId())); // 有多少人关注了该问题
+
             vos.add(vo);
         }
 
@@ -64,7 +76,24 @@ public class HomeController
                                @PathVariable("userId") int userId)
     {
         model.addAttribute("vos", getQuestions(userId, 0, 10));
-        return "home";
+
+        ViewObject vo = new ViewObject();
+        User targetUser = userService.getUserById(userId);
+        vo.set("user", targetUser); // 目标用户
+        vo.set("commentCount", commentService.getCommentCountByUserId(userId)); // 目标用户发表的评论数
+        vo.set("followerCount", followService.getFollowersCount(EntityType.ENTITY_USER, userId)); // 目标用户的粉丝数
+        vo.set("followeeCount", followService.getFolloweesCount(userId, EntityType.ENTITY_USER)); // 目标用户的关注数
+        boolean followed = false;
+        if(userHolder.getUser() != null)
+        {
+            followed = followService.isFollower(userHolder.getUser().getId(),
+                                                    EntityType.ENTITY_USER, userId); // 当前已登录用户是否关注了目标用户
+        }
+        vo.set("followed", followed);
+
+        model.addAttribute("profileUser", vo);
+
+        return "profile";
     }
 }
 

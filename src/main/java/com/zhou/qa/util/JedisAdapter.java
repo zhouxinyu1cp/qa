@@ -5,12 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.BinaryClient;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhouxinyu1cp on 2018/5/22.
@@ -178,6 +177,11 @@ public class JedisAdapter implements InitializingBean
         pool = new JedisPool("redis://localhost:6379/2");
     }
 
+    public Jedis getJedis()
+    {
+        return pool.getResource();
+    }
+
     //-------- 对 Redis set 做封装 --------//
 
     // 在set中添加元素
@@ -191,7 +195,7 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis添加数据出错：" + e.getMessage());
+            logger.error("Redis sadd 出错：" + e.getMessage());
         }
         finally
         {
@@ -215,7 +219,7 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis删除数据出错：" + e.getMessage());
+            logger.error("Redis srem 出错：" + e.getMessage());
         }
         finally
         {
@@ -239,7 +243,7 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis出错：" + e.getMessage());
+            logger.error("Redis sismember 出错：" + e.getMessage());
         }
         finally
         {
@@ -263,7 +267,7 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis出错：" + e.getMessage());
+            logger.error("Redis scard 出错：" + e.getMessage());
         }
         finally
         {
@@ -289,7 +293,7 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis添加数据出错：" + e.getMessage());
+            logger.error("Redis lpush 出错：" + e.getMessage());
         }
         finally
         {
@@ -315,13 +319,202 @@ public class JedisAdapter implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.error("Redis添加数据出错：" + e.getMessage());
+            logger.error("Redis brpop 出错：" + e.getMessage());
         }
         finally
         {
             if(jedis != null)
             {
                 jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
+    }
+
+    //-------- 对 Redis zset 做封装 --------//
+
+    // 在zset中添加元素
+    public long zadd(String key, double score, String member)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zadd(key, score, member);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zadd 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return -1;
+    }
+
+    // 在zset中删除元素
+    public long zrem(String key, String member)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zrem(key, member);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zrem 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return -1;
+    }
+
+    // 获取zset中正向排名的元素
+    public Set<String> zrange(String key, long start, long end)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zrange(key, start, end);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zrange 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
+    }
+
+    // 获取zset中反向排名的元素
+    public Set<String> zrevrange(String key, long start, long end)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zrevrange(key, start, end);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zrevrange 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
+    }
+
+    // 获取zset中的元素个数
+    public long zcard(String key)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zcard(key);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zcard 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return -1;
+    }
+
+    // 返回某元素在zset中的分数（权重）
+    public Double zscore(String key, String member)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.zscore(key, member);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis zscore 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
+    }
+
+    //-------- Redis 事务 --------//
+
+    // 开启事务
+    public Transaction multi(Jedis jedis)
+    {
+        return jedis.multi();
+    }
+
+    // 执行事务
+    public List<Object> exec(Transaction ta, Jedis jedis)
+    {
+        try
+        {
+            return ta.exec(); // 返回事务中每条指令的结果
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis exec 错误：" + e.getMessage());
+            ta.discard(); // 回滚事务
+        }
+        finally
+        {
+            if(ta != null) // 关闭事务
+            {
+                try
+                {
+                    ta.close();
+
+                    if(jedis != null) // 关闭连接
+                    {
+                        jedis.close();
+                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
