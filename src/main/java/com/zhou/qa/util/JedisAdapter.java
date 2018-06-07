@@ -306,6 +306,30 @@ public class JedisAdapter implements InitializingBean
         return -1;
     }
 
+    // 取list中某范围的元素
+    public List<String> lrange(String key, int start, int end)
+    {
+        Jedis jedis = null;
+        try
+        {
+            jedis = pool.getResource();
+            return jedis.lrange(key, start, end);
+        }
+        catch (Exception e)
+        {
+            logger.error("Redis lrange 出错：" + e.getMessage());
+        }
+        finally
+        {
+            if(jedis != null)
+            {
+                jedis.close(); // 释放连接
+            }
+        }
+
+        return null;
+    }
+
     // 从list右边弹出元素，
     // 若list为空，则阻塞直到list有元素为止
     // 返回一个双元素的List，第1个是key，第2个是value，取value即可

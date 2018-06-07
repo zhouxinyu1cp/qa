@@ -1,5 +1,8 @@
 package com.zhou.qa.controller;
 
+import com.zhou.qa.async.Event;
+import com.zhou.qa.async.EventSender;
+import com.zhou.qa.async.EventType;
 import com.zhou.qa.model.Comment;
 import com.zhou.qa.model.EntityType;
 import com.zhou.qa.model.UserHolder;
@@ -35,6 +38,9 @@ public class CommentController
     @Autowired
     QuestionService questionService;
 
+    @Autowired
+    EventSender eventSender;
+
     // 添加评论，在 detail.html 中有个 form 表单提交评论，URL请求是 /addComment
     @RequestMapping(value = {"/addComment"}, method = {RequestMethod.POST})
     public String addComment(@RequestParam(value = "questionId") int questionId,
@@ -66,6 +72,13 @@ public class CommentController
                 // （考虑做成一个事物，添加评论及修改comment_count字段应该为一个操作，后续可设计成异步方式）
                 int counts = commentService.getCommentsCountByEntityId(comment.getEntityId(), comment.getEntityType());
                 questionService.updateCommentCountById(comment.getEntityId(), counts);
+
+                // 产生一个评论事件
+                Event event = new Event(EventType.COMMENT_EVENT);
+                event.setFromUserId(userHolder.getUser().getId())
+                        .setEntityType(EntityType.ENTITY_QUESTION)
+                            .setEntityId(questionId);
+                eventSender.sendEvent(event);
             }
         }
         catch (Exception e)

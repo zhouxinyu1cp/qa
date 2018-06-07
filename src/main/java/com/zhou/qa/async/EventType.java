@@ -12,7 +12,8 @@ public enum EventType
     MESSAGE_EVENT(3),   // 私信事件
     MAIL_EVENT(4),      // 邮件事件
     FOLLOW_EVENT(5),    // 关注事件
-    UNFOLLOW_EVENT(6);  // 取关事件
+    UNFOLLOW_EVENT(6),  // 取关事件
+    COMMENT_EVENT(7);   // 评论事件
 
     private int value;
 

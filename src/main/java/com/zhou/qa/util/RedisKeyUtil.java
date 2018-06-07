@@ -13,6 +13,7 @@ public class RedisKeyUtil
     public static String BLOCK_QUEEU = "blockQueeu"; // 事件队列key前缀
     public static String FOLLOWER = "follower"; // 粉丝集合key前缀（关注者集合）
     public static String FOLLOWEE = "followee"; // 关注对象集合key前缀
+    public static String TIMELINE = "timeline"; // 最新动态timeline队列前缀
 
     // 关联某个实体，获取点赞key
     public static String getLikeKey(int entityType, int entityId)
@@ -42,6 +43,12 @@ public class RedisKeyUtil
     public static String getFolloweesKey(int userId, int entityType)
     {
         return FOLLOWEE + SPLIT + String.valueOf(userId) + SPLIT + String.valueOf(entityType);
+    }
+
+    // 获取指定用户的timeline队列key
+    public static String getTimelineKey(int userId)
+    {
+        return TIMELINE + SPLIT + String.valueOf(userId);
     }
 }
 

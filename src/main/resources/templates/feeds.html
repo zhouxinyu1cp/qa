@@ -27,7 +27,8 @@
                         -->
                     <div class="zm-item-answer-author-info">
                         <a class="author-link" data-tip="p$b$amuro1230" target="_blank" href="/user/$!{vo.userId}">$!{vo.userName}</a>
-                        评论了该问题 ，$data.format('yyyy-MM-dd HH:mm:ss', $!{vo.createdDate})</div>
+                        评论了该问题 ，${vo.createdDate}</div>
+                    <!--    评论了该问题 ，$data.format('yyyy-MM-dd HH:mm:ss', $!{vo.createdDate})</div> -->
                     <!--
                     <div class="zm-item-vote-info" data-votecount="4168" data-za-module="VoteInfo">
                         <span class="voters text">
@@ -89,7 +90,8 @@
                         -->
                     <div class="zm-item-answer-author-info">
                         <a class="author-link" data-tip="p$b$amuro1230" target="_blank" href="/user/$!{vo.userId}">$!{vo.userName}</a>
-                        关注了该问题 ，$data.format('yyyy-MM-dd HH:mm:ss', $!{vo.createdDate})</div>
+                        关注了该问题 ，${vo.createdDate}</div>
+                    <!--    关注了该问题 ，$data.format('yyyy-MM-dd HH:mm:ss', $!{vo.createdDate})</div> -->
                     <!--
                     <div class="zm-item-vote-info" data-votecount="4168" data-za-module="VoteInfo">
                         <span class="voters text">
@@ -143,9 +145,9 @@
                     <div id="js-home-feed-list" class="zh-general-list topstory clearfix" data-init="{&quot;params&quot;: {}, &quot;nodename&quot;: &quot;TopStory2FeedList&quot;}" data-delayed="true" data-za-module="TopStoryFeedList">
 
                         #foreach($vo in $feeds)
-                            #if($vo.type == 1)
+                            #if($vo.type == 7)
                                 #comment_question($vo)
-                            #elseif($vo.type==4)
+                            #elseif($vo.type==5)
                                 #follow_question($vo)
                             #end
                         #end
