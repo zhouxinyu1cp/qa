@@ -6,10 +6,12 @@
     <div class="zu-main-content">
         <div class="zu-main-content-inner">
             <ul class="list contents navigable">
+
                 #foreach($vo in $vos)
+
                 <li class="item clearfix">
                     <div class="title">
-                        <a target="_blank" href="/user/$!{vo.user.id}" class="js-title-link">$!{vo.question.title}</a>
+                        <a target="_blank" href="/question/${vo.question.id}" class="js-title-link">${vo.question.title}</a>
                     </div>
                     <div class="content">
 
@@ -21,11 +23,12 @@
                                     </div>
                                     <div class="entry-body">
                                         <div class="entry-meta">
-                                            <strong class="author-line"><a class="author" href="/user/$!{vo.user.id}">$!{vo.user.name}</a>，$data.format('yyyy-MM-dd HH:mm:ss', $!{vo.question.createdDate})</strong>
+                                            <!-- <strong class="author-line"><a class="author" href="/user/${vo.user.id}">${vo.user.name}</a>，$data.format('yyyy-MM-dd HH:mm:ss', ${vo.question.createdDate})</strong> -->
+                                            <strong class="author-line"><a class="author" href="/user/${vo.user.id}">${vo.user.name}</a>，${vo.question.createdDate}</strong>
                                         </div>
                                         <div class="entry-content js-collapse-body">
                                             <div class="summary hidden-expanded" style="">
-                                            $!{vo.question.content}
+                                            ${vo.question.content}
                                             </div>
                                         </div>
                                     </div>
@@ -34,7 +37,9 @@
                         </ul>
                     </div>
                 </li>
+
                 #end
+
             </ul>
         </div>
     </div>

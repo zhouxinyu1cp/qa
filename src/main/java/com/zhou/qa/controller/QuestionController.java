@@ -1,5 +1,8 @@
 package com.zhou.qa.controller;
 
+import com.zhou.qa.async.Event;
+import com.zhou.qa.async.EventSender;
+import com.zhou.qa.async.EventType;
 import com.zhou.qa.model.*;
 import com.zhou.qa.service.*;
 import com.zhou.qa.util.QaUtil;
@@ -42,6 +45,9 @@ public class QuestionController
     @Autowired
     FollowService followService;
 
+    @Autowired
+    EventSender eventSender;
+
     // 发布问题请求
     // 通过调用js函数来提交发布问题请求，是一个POST请求，返回一个json字符串给前端更新页面
     // 具体看 resources/static/scripts/main/component/popupAdd.js 和 popup.js
@@ -68,6 +74,14 @@ public class QuestionController
             // 添加问题成功，返回码 0
             if(questionService.addQuestion(question) > 0)
             {
+                // 建立该问题的solr全文索引，以便搜索
+                Event event = new Event(EventType.SOLR_CREATE_INDEX_EVENT);
+                event.setEntityType(EntityType.ENTITY_QUESTION)
+                        .setEntityId(question.getId())
+                            .setExt("question_title", question.getTitle())
+                                .setExt("question_content", question.getContent());
+                eventSender.sendEvent(event);
+
                 return QaUtil.getResponseJsonString(0);
             }
         }

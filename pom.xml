@@ -88,6 +88,12 @@
 			<version>1.4.7</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>6.2.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
